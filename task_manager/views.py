@@ -32,15 +32,14 @@ class TaskDetailView(APIView):
         return Response(serializer.data)
 
 
-class CreateTaskView(APIView):
+class CreateTaskView(generics.CreateAPIView):
     """This endpoint allows for creation of a task"""
 
-    def post(self, request):
-        task = Task
-        pass
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
 
-class UpdateTaskView(generics.UpdateAPIView):
+class UpdateTaskView(generics.RetrieveUpdateAPIView):
     """This endpoint allows for updating a specific task by passing in the id of the task to update"""
 
     queryset = Task.objects.all()
@@ -73,7 +72,7 @@ class CreateTagView(generics.CreateAPIView):
     serializer_class = TagSerializer
 
 
-class UpdateTagView(generics.UpdateAPIView):
+class UpdateTagView(generics.RetrieveUpdateAPIView):
     """This endpoint allows for updating a specific tag by passing in the id of the tag to update"""
 
     queryset = Tag.objects.all()
