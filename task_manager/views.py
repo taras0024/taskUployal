@@ -32,19 +32,45 @@ class TaskDetailView(APIView):
         return Response(serializer.data)
 
 
-class CreateTaskView(generics.CreateAPIView):
+class CreateTaskView(APIView):
     """This endpoint allows for creation of a task"""
 
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
+    def post(self, request):
+        task = TaskSerializer(data=request.data)
+        if task.is_valid():
+            tags_list = request.data.get('tags')
+            for id in tags_list:
+                tag = Tag.objects.filter(id=id).prefetch_related('task').first()
+                task_tag = tag._prefetched_objects_cache['task']
+                for _task in task_tag:
+                    if request.data.get('priority') == _task.priority:
+                        return Response(status=400)
+            task.save()
+        return Response(status=201)
 
 
-class UpdateTaskView(generics.RetrieveUpdateAPIView):
+class UpdateTaskView(APIView):
     """This endpoint allows for updating a specific task by passing in the id of the task to update"""
 
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-
+    def put(self, request, pk):
+        task = Task.objects.get(id=pk)
+        data = request.data
+        if task.status == 'BG' and data['status'] == 'DN':
+            return Response(status=400)
+        elif task.status == 'IP' and data['status'] == 'BG':
+            return Response(status=400)
+        elif task.status == 'DN' and data['status'] == 'IP':
+            return Response(status=400)
+        task.title = data['title']
+        task.description = data['description'] if data['description'] else ''
+        task.created = data['created']
+        task.priority = data['priority']
+        task.status = data['status']
+        task.updated = data['updated']
+        task.tags.set(data['tags'])
+        task.save()
+        serializer = TaskSerializer(task)
+        return Response(serializer.data)
 
 # <-- Tasks Views
 
@@ -79,11 +105,3 @@ class UpdateTagView(generics.RetrieveUpdateAPIView):
     serializer_class = TagSerializer
 
 # <-- Tags Views
-
-
-def home(self):
-    tag = Tag.objects.filter(id=1).prefetch_related('task')[0]
-    task_tag = tag._prefetched_objects_cache['task']
-    for task in task_tag:
-        print(task.status)
-    return HttpResponse(status=200)
