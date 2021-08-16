@@ -6,9 +6,9 @@ from rest_framework import generics
 
 from task_manager.models import Task, Tag
 from task_manager.serializers import (
-    TagListSerializer,
+    TagSerializer,
     TaskDetailSerializer,
-    TaskListSerializer,
+    TaskSerializer,
 )
 
 # Tasks Views -->
@@ -18,7 +18,7 @@ from task_manager.service import TaskFilter
 class TaskListView(generics.ListAPIView):
     """This endpoint list all of the available tasks from the database"""
     queryset = Task.objects.all()
-    serializer_class = TaskListSerializer
+    serializer_class = TaskSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TaskFilter
 
@@ -32,18 +32,19 @@ class TaskDetailView(APIView):
         return Response(serializer.data)
 
 
-class CreateTaskView(generics.CreateAPIView):
+class CreateTaskView(APIView):
     """This endpoint allows for creation of a task"""
 
-    queryset = Task.objects.all()
-    serializer_class = TaskListSerializer
+    def post(self, request):
+        task = Task
+        pass
 
 
 class UpdateTaskView(generics.UpdateAPIView):
     """This endpoint allows for updating a specific task by passing in the id of the task to update"""
 
     queryset = Task.objects.all()
-    serializer_class = TaskListSerializer
+    serializer_class = TaskSerializer
 
 
 # <-- Tasks Views
@@ -53,7 +54,7 @@ class UpdateTaskView(generics.UpdateAPIView):
 class TagListView(generics.ListAPIView):
     """Get list of tags"""
     queryset = Tag.objects.all()
-    serializer_class = TagListSerializer
+    serializer_class = TagSerializer
 
 
 class TagDetailView(APIView):
@@ -61,7 +62,7 @@ class TagDetailView(APIView):
 
     def get(self, request, pk):
         tag = Tag.objects.get(id=pk)
-        serializer = TagListSerializer(tag)
+        serializer = TagSerializer(tag)
         return Response(serializer.data)
 
 
@@ -69,14 +70,14 @@ class CreateTagView(generics.CreateAPIView):
     """This endpoint allows for creation of a tag"""
 
     queryset = Tag.objects.all()
-    serializer_class = TagListSerializer
+    serializer_class = TagSerializer
 
 
 class UpdateTagView(generics.UpdateAPIView):
     """This endpoint allows for updating a specific tag by passing in the id of the tag to update"""
 
     queryset = Tag.objects.all()
-    serializer_class = TagListSerializer
+    serializer_class = TagSerializer
 
 # <-- Tags Views
 

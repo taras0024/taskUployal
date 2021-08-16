@@ -3,7 +3,7 @@ from rest_framework import serializers
 from task_manager.models import Tag, Task
 
 
-class TagListSerializer(serializers.ModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     """List of tags"""
 
     class Meta:
@@ -11,7 +11,7 @@ class TagListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TaskListSerializer(serializers.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     """List of Task"""
 
     class Meta:
