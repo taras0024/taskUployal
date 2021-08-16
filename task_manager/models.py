@@ -37,7 +37,7 @@ class Task(models.Model):
     priority = models.CharField(max_length=1, choices=PRIORITY, default='M')
     status = models.CharField(max_length=2, choices=STATUS, default='BG')
     updated = models.DateField('Updated', default=datetime.now)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='users')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='tags')
 
     def __str__(self):
         return self.title
