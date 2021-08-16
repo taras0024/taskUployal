@@ -8,7 +8,7 @@ from task_manager.models import Task, Tag
 from task_manager.serializers import (
     TagSerializer,
     TaskDetailSerializer,
-    TaskSerializer,
+    TaskSerializer, TagDetailSerializer,
 )
 
 # Tasks Views -->
@@ -62,7 +62,7 @@ class UpdateTaskView(APIView):
         elif task.status == 'DN' and data['status'] == 'IP':
             return Response(status=400)
         task.title = data['title']
-        task.description = data['description'] if data['description'] else ''
+        task.description = data.get('description', None)
         task.created = data['created']
         task.priority = data['priority']
         task.status = data['status']
@@ -87,7 +87,7 @@ class TagDetailView(APIView):
 
     def get(self, request, pk):
         tag = Tag.objects.get(id=pk)
-        serializer = TagSerializer(tag)
+        serializer = TagDetailSerializer(tag)
         return Response(serializer.data)
 
 

@@ -11,6 +11,16 @@ class TagSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TagDetailSerializer(serializers.ModelSerializer):
+    """Tag"""
+
+    task = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Tag
+        fields = "__all__"
+
+
 class TaskSerializer(serializers.ModelSerializer):
     """List of Task"""
 
