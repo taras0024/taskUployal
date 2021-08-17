@@ -44,9 +44,10 @@ class CreateTaskView(APIView):
                 task_tag = tag._prefetched_objects_cache['task']
                 for _task in task_tag:
                     if request.data.get('priority') == _task.priority:
-                        return Response(status=400)
+                        return Response({'status': 400, 'message': 'tag have such priority'})
             task.save()
-        return Response(status=201)
+            return Response({'status': 201, 'message': 'created'})
+        return Response({'status': 400, 'message': 'invalid data'})
 
 
 class UpdateTaskView(APIView):
