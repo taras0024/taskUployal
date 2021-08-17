@@ -23,24 +23,21 @@ class TaskListView(generics.ListAPIView):
     filterset_class = TaskFilter
 
 
-class TaskDetailView(APIView):
-    """Get task"""
-
-    def get(self, request, pk):
-        try:
-            task = Task.objects.get(id=pk)
-            serializer = TaskDetailSerializer(task)
-            return Response(serializer.data)
-        except ObjectDoesNotExist:
-            return Response(['Element with this ID not found'], status=404)
-
-
-# class CreateTaskView(generics.CreateAPIView):
-#     """This endpoint allows for creation of a task"""
+# class TaskDetailView(APIView):
+#     """Get task"""
 #
-#     queryset = Task.objects.all()
-#     serializer_class = TaskSerializer
+#     def get(self, request, pk):
+#         try:
+#             task = Task.objects.get(id=pk)
+#             serializer = TaskDetailSerializer(task)
+#             return Response(serializer.data)
+#         except ObjectDoesNotExist:
+#             return Response(['Element with this ID not found'], status=404)
 
+class TaskDetailView(generics.RetrieveAPIView):
+    """Get task"""
+    queryset = Task
+    serializer_class = TaskDetailSerializer
 
 class CreateTaskView(APIView):
     """This endpoint allows for creation of a task"""
