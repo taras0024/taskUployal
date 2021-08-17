@@ -30,8 +30,6 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     # def validate(self, data):
-    #     print(data)
-    #     print(data.get('priority'))
     #     tags = data.get('tags')
     #     for tag in tags:
     #         tag_obj = Tag.objects.filter(id=tag.id).prefetch_related('task').first()
@@ -49,6 +47,11 @@ class TaskSerializer(serializers.ModelSerializer):
             for task in tasks:
                 if data.get('priority') == task.priority:
                     raise serializers.ValidationError({'error': 'such priority already exist'})
+
+        new_task = Task(title=data['title'], description=data.get('description', None), priority=data['priority'],
+                        status=data['status'])
+        new_task.save()
+        new_task.tags.set(data['tags'])
         return data
 
     def update(self, instance, data):
@@ -59,6 +62,7 @@ class TaskSerializer(serializers.ModelSerializer):
         elif instance.status == 'DN' and data['status'] == 'IP':
             raise serializers.ValidationError({'error': 'wrong ordering of changing data'})
         instance.title = data.get('title', instance.title)
+        instance.description = data.get('description', instance.description)
         instance.priority = data.get('priority', instance.priority)
         instance.status = data.get('status', instance.status)
         instance.tags.set(data.get('tags', instance.tags))

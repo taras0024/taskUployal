@@ -32,11 +32,22 @@ class TaskDetailView(APIView):
         return Response(serializer.data)
 
 
-class CreateTaskView(generics.CreateAPIView):
+# class CreateTaskView(generics.CreateAPIView):
+#     """This endpoint allows for creation of a task"""
+#
+#     queryset = Task.objects.all()
+#     serializer_class = TaskSerializer
+
+
+class CreateTaskView(APIView):
     """This endpoint allows for creation of a task"""
 
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
+    def post(self, request):
+        task = TaskSerializer(data=request.data)
+        if task.is_valid(raise_exception=True):
+            task.save()
+            return Response(status=201)
+        return Response(status=400)
 
 
 class UpdateTaskView(generics.RetrieveUpdateAPIView):
