@@ -1,5 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
@@ -25,7 +26,6 @@ class TaskListView(generics.ListAPIView):
 
 # class TaskDetailView(APIView):
 #     """Get task"""
-#
 #     def get(self, request, pk):
 #         try:
 #             task = Task.objects.get(id=pk)
@@ -33,6 +33,10 @@ class TaskListView(generics.ListAPIView):
 #             return Response(serializer.data)
 #         except ObjectDoesNotExist:
 #             return Response(['Element with this ID not found'], status=404)
+#         # ---------------
+#         task = get_object_or_404(Task, id=pk)
+#         serializer = TaskDetailSerializer(task)
+#         return Response(serializer.data)
 
 class TaskDetailView(generics.RetrieveAPIView):
     """Get task"""
@@ -71,12 +75,9 @@ class TagDetailView(APIView):
     """Get tag"""
 
     def get(self, request, pk):
-        try:
-            tag = Tag.objects.get(id=pk)
-            serializer = TagDetailSerializer(tag)
-            return Response(serializer.data)
-        except ObjectDoesNotExist:
-            return Response(['Element with this ID not found'], status=404)
+        tag = get_object_or_404(Tag, id=pk)
+        serializer = TagDetailSerializer(tag)
+        return Response(serializer.data)
 
 
 class CreateTagView(generics.CreateAPIView):
