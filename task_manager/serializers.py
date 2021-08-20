@@ -42,8 +42,7 @@ class TaskSerializer(serializers.ModelSerializer):
     def create(self, data):
         tags = data.get('tags')
         for tag in tags:
-            tag_obj = Tag.objects.filter(id=tag.id).prefetch_related('task').first()
-            tasks = tag_obj._prefetched_objects_cache['task']
+            tasks = Task.objects.filter(tags=tag.id)
             for task in tasks:
                 if data.get('priority') == task.priority:
                     raise serializers.ValidationError({'error': 'such priority already exist'})

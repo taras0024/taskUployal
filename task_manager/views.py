@@ -43,6 +43,7 @@ class TaskDetailView(generics.RetrieveAPIView):
     queryset = Task
     serializer_class = TaskDetailSerializer
 
+
 class CreateTaskView(APIView):
     """This endpoint allows for creation of a task"""
 
